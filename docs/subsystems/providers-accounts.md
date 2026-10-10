@@ -81,6 +81,8 @@ successful model discovery for its decision result, and reports none when
 no decision model was discovered (`Test` in
 [`test.go`](../../internal/provider/test.go)).
 
+`magpie accounts discovery off` saves `noAccountDiscovery: true`; `MAGPIE_NO_ACCOUNTS=1` also disables discovery (it never overrides a saved opt-out). With either, account lists, subscription usage, renewal, warm-up and session identity reads return empty before reading credentials or keychains; stored API-key providers continue working. Subscription plugin hosts and account migration stay idle while it is off. The default is discovery on. Restart a running magpie after changing this preference so work already started has ended.
+
 ## Runtime path
 
 1. **Add.** The Providers page adds a key provider through `Add` or `Save`, or an account through `StartSignIn`. An agent signed in on its own is found by `Accounts` with no step from the user.

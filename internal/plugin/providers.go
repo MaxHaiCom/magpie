@@ -567,8 +567,13 @@ func validAuth(b []byte) bool {
 
 // readAuthFile is plugin-auth.json, or its last good generation when a
 // crash left it all zero (#1505): sign-ins that don't read are unknown,
-// never none.
-func readAuthFile() ([]byte, error) { return lastgood.Read(AuthPath(), validAuth) }
+// never none. With account discovery off it stays unread.
+func readAuthFile() ([]byte, error) {
+	if settings.AccountDiscoveryOff() {
+		return nil, os.ErrNotExist
+	}
+	return lastgood.Read(AuthPath(), validAuth)
+}
 
 // SignedIn is whether a plugin sign-in is kept for provider.
 func SignedIn(provider string) bool {

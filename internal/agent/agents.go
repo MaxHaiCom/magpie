@@ -19,6 +19,7 @@ import (
 	"github.com/yetone/magpie/internal/gateway"
 	"github.com/yetone/magpie/internal/provider"
 	"github.com/yetone/magpie/internal/sessions"
+	"github.com/yetone/magpie/internal/settings"
 	"github.com/yetone/magpie/internal/usage"
 )
 
@@ -278,7 +279,7 @@ func ownOptionsFrom(native func(p string) []catalog.Model, authFile string, cur 
 	if p, _, ok := strings.Cut(cur, "/"); ok && p != magpieID {
 		set[p] = true
 	}
-	if b, err := os.ReadFile(authFile); err == nil {
+	if b, err := readOwnAuth(authFile); err == nil {
 		var m map[string]json.RawMessage
 		if json.Unmarshal(b, &m) == nil {
 			for k := range m {
@@ -1255,4 +1256,12 @@ func crushAt(at place, path, data string) *Agent {
 			},
 		},
 	}
+}
+
+// readOwnAuth leaves agents' credential stores alone when discovery is off.
+func readOwnAuth(path string) ([]byte, error) {
+	if settings.AccountDiscoveryOff() {
+		return nil, os.ErrNotExist
+	}
+	return os.ReadFile(path)
 }

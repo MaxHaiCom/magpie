@@ -185,6 +185,8 @@ type Settings struct {
 	// is stuck in a loop of the same few lines (#1359). Off, as by
 	// default, the gateway ends such a reply with an error.
 	NoLoopGuard bool `json:"noLoopGuard,omitempty"`
+	// NoAccountDiscovery stops reading agents' sign-ins and offering subscriptions.
+	NoAccountDiscovery bool `json:"noAccountDiscovery,omitempty"`
 	// NoStats stops the one event a day that counts magpie's users (see
 	// internal/stats).
 	NoStats bool `json:"noStats,omitempty"`
@@ -774,6 +776,7 @@ func (s *Settings) KeepOwn(cur Settings) {
 	s.GatewayMode = cur.GatewayMode
 	s.NoWSLAgents = cur.NoWSLAgents
 	s.QuotaReads = cur.QuotaReads
+	s.NoAccountDiscovery = cur.NoAccountDiscovery
 }
 
 // RenamePerModel moves what the user said of a provider's models to the id

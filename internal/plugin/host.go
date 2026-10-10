@@ -720,6 +720,9 @@ func hostScript(name string, js []byte) (string, error) {
 // get is the running host, started (Bun downloaded, the plugins loaded)
 // when there is none.
 func get(ctx context.Context) (*host, error) {
+	if settings.AccountDiscoveryOff() {
+		return nil, errors.New("account discovery is off; subscription plugins are disabled")
+	}
 	checkList()
 	hostMu.Lock()
 	defer hostMu.Unlock()

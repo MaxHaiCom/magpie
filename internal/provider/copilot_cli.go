@@ -25,6 +25,7 @@ import (
 
 	"github.com/yetone/magpie/internal/appdir"
 	"github.com/yetone/magpie/internal/proc"
+	"github.com/yetone/magpie/internal/settings"
 )
 
 // copilotCLIHeaders are what the CLI sends with its token.
@@ -56,7 +57,10 @@ func copilotCLIHome() string {
 // copilotCLILogin is the account the Copilot CLI is signed in to, with its
 // token.
 func copilotCLILogin() (copilotApp, bool) {
-	raw, err := os.ReadFile(filepath.Join(copilotCLIHome(), "config.json"))
+	if settings.AccountDiscoveryOff() {
+		return copilotApp{}, false
+	}
+	raw, err := readAccountFile(filepath.Join(copilotCLIHome(), "config.json"))
 	if err != nil {
 		return copilotApp{}, false
 	}
@@ -106,6 +110,9 @@ var copilotSecrets struct {
 // copilotCLISecret reads the CLI's token from the keychain, once in a
 // while: each read may ask the user to allow it.
 var copilotCLISecret = func(account string) string {
+	if settings.AccountDiscoveryOff() {
+		return ""
+	}
 	c := &copilotSecrets
 	c.Lock()
 	defer c.Unlock()

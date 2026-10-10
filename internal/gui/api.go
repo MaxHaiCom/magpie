@@ -1074,6 +1074,7 @@ func Handler(w Windows, gw *gateway.Server) http.Handler {
 		in.UpdateMirror = cur.UpdateMirror
 		// gateway mode, set on its own (gateway-mode)
 		in.GatewayMode = cur.GatewayMode
+		in.NoAccountDiscovery = cur.NoAccountDiscovery // set by accounts discovery, never sent by the page
 		if v := strings.TrimSpace(in.Vision); v != "" && v != "off" && v != cur.Vision {
 			if _, _, ok := provider.Resolve(v); !ok {
 				fail(rw, fmt.Errorf("no model %s to describe images", v))

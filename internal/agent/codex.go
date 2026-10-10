@@ -23,6 +23,7 @@ import (
 	"github.com/yetone/magpie/internal/gateway"
 	"github.com/yetone/magpie/internal/provider"
 	"github.com/yetone/magpie/internal/sessions"
+	"github.com/yetone/magpie/internal/settings"
 )
 
 // Codex talks the OpenAI Responses API. Signed in to ChatGPT, it is
@@ -1453,6 +1454,9 @@ func CodexOwnOnly() bool {
 // its built-in provider then runs and asks for the model list at
 // openai_base_url. Signed in with an API key alone, it asks for none.
 func codexChatGPT(dir string) bool {
+	if settings.AccountDiscoveryOff() {
+		return false
+	}
 	var a struct {
 		Tokens struct {
 			Access string `json:"access_token"`

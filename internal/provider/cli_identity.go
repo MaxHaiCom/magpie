@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
+
+	"github.com/yetone/magpie/internal/settings"
 )
 
 // cliIdentity is who an agent's CLI says is signed in (`cursor-agent about`,
@@ -84,6 +86,9 @@ func (c *cliIdentity) keep() {
 }
 
 func (c *cliIdentity) get() (user, plan string, ok bool) {
+	if settings.AccountDiscoveryOff() {
+		return "", "", false
+	}
 	c.Lock()
 	defer c.Unlock()
 	if c.at.IsZero() && !c.read {

@@ -14,6 +14,7 @@ import (
 
 	"github.com/yetone/magpie/internal/edit"
 	"github.com/yetone/magpie/internal/proc"
+	"github.com/yetone/magpie/internal/settings"
 )
 
 // What the Agents page says beside an agent's 「接入」 switch (the owner's
@@ -26,6 +27,9 @@ import (
 // Claude subscription), "chatgpt" (a ChatGPT sign-in), "key" (an API key
 // of its own), "providers:N" (N providers of its own); "" when unknown.
 func (a *Agent) Source() string {
+	if settings.AccountDiscoveryOff() {
+		return ""
+	}
 	if a.WSL != "" || a.Path == "" {
 		return ""
 	}

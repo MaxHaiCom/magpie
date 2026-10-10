@@ -34,6 +34,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/yetone/magpie/internal/settings"
 )
 
 // stepfunSites are StepFun's two platforms, by the API host a provider uses.
@@ -133,7 +135,7 @@ func stepfunPath() string { return filepath.Join(filepath.Dir(Path()), "stepfun-
 
 func loadStepFun() map[string]stepfunSession {
 	out := map[string]stepfunSession{}
-	if b, err := os.ReadFile(stepfunPath()); err == nil {
+	if b, err := readAccountFile(stepfunPath()); err == nil {
 		_ = json.Unmarshal(b, &out)
 	}
 	return out
@@ -191,6 +193,9 @@ func StepFunSignedIn(site string) bool {
 // the platform has taken it: a page that isn't signed in yet has an
 // anonymous one, which is refused here.
 func SaveStepFunSession(ctx context.Context, site, access, refresh, webID string) error {
+	if settings.AccountDiscoveryOff() {
+		return errAccountDiscoveryOff
+	}
 	if _, ok := stepfunSites[site]; !ok {
 		return fmt.Errorf("no StepFun site %q", site)
 	}
@@ -229,6 +234,9 @@ func SaveStepFunSession(ctx context.Context, site, access, refresh, webID string
 
 // SignOutStepFun forgets the site's sign-in.
 func SignOutStepFun(site string) error {
+	if settings.AccountDiscoveryOff() {
+		return errAccountDiscoveryOff
+	}
 	stepfunMu.Lock()
 	all := loadStepFun()
 	_, had := all[site]

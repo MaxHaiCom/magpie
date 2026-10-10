@@ -65,6 +65,8 @@ magpie quota                                    # what's left on every plan
 magpie tui                                      # the whole thing, in a terminal
 ```
 
+On managed or shared machines, `magpie accounts discovery off` skips agents' sign-ins and keychains; `on` restores the default. `MAGPIE_NO_ACCOUNTS=1` disables discovery for one process without changing the saved setting.
+
 ## Supported agents
 
 <table>
